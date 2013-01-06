@@ -79,6 +79,72 @@ namespace HexyPilot
         public System.Int32 tv_nsec;
     }
 
+    public enum CWIID_MESG_TYPE
+    {
+        STATUS,
+        BTN,
+        ACC,
+        IR,
+        NUNCHUK,
+        CLASSIC,
+        ERROR,
+        UNKNOWN
+    }
+
+    public enum CWIID_EXT_TYPE
+    {
+        CWIID_EXT_NONE,
+        CWIID_EXT_NUNCHUK,
+        CWIID_EXT_CLASSIC,
+        CWIID_EXT_BALANCE,
+        CWIID_EXT_MOTIONPLUS,
+        CWIID_EXT_UNKNOWN
+    };
+
+    [Flags]
+    public enum CWIID_BTN
+    {
+        BTN2 = 0x0001,
+        BTN1 = 0x0002,
+        B = 0x0004,
+        A = 0x0008,
+        MINUS = 0x0010,
+        HOME = 0x0080,
+        LEFT = 0x0100,
+        RIGHT = 0x0200,
+        DOWN = 0x0400,
+        UP = 0x0800,
+        PLUS = 0x1000
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct CWIIDStatusMessage
+    {
+        public CWIID_MESG_TYPE type;
+        public byte battery;
+        public CWIID_EXT_TYPE ext_type;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct CWIIDButtonMessage
+    {
+        public CWIID_MESG_TYPE type;
+        public CWIID_BTN buttons;
+    }
+
+    [StructLayout(LayoutKind.Explicit)]
+    public struct CWIIDMessage
+    {
+        [FieldOffset(0)]
+        public CWIID_MESG_TYPE Type;
+
+        [FieldOffset(0)]
+        public CWIIDStatusMessage StatusMessage;
+
+        [FieldOffset(0)]
+        public CWIIDButtonMessage ButtonMessage;
+    }
+
     public delegate void CWiiDMessageCallback(IntPtr wiimote, int mesg_count, IntPtr mesgArray, ref timespec timestamp);
 
     public static class CWiiD

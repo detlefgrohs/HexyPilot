@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 
 namespace HexyPilot
 {
@@ -85,8 +86,51 @@ namespace HexyPilot
 
         private void MessageCallback(IntPtr wiimote, int mesg_count, IntPtr mesgArray, ref timespec timestamp)
         {
-            Console.Write("{0}:{1} ", timestamp.tv_sec, timestamp.tv_nsec);
-            Console.WriteLine(mesg_count);
+            var msgSize = Marshal.SizeOf(typeof(CWIIDMessage));
+
+            for (int i = 0; i < mesg_count; i++)
+            {
+                IntPtr p = new IntPtr(mesgArray.ToInt64() + i * msgSize);
+
+                var msg = (CWIIDMessage)Marshal.PtrToStructure(p, typeof(CWIIDMessage));
+
+                switch (msg.Type)
+                {
+                    case CWIID_MESG_TYPE.STATUS:
+                        Console.WriteLine("Status Update: " + msg.StatusMessage.battery);
+                        break;
+                    case CWIID_MESG_TYPE.BTN:
+                        DoButtonUpdate(msg.ButtonMessage.buttons);
+                        break;
+                    case CWIID_MESG_TYPE.ACC:
+                    case CWIID_MESG_TYPE.IR:
+                    case CWIID_MESG_TYPE.NUNCHUK:
+                    case CWIID_MESG_TYPE.CLASSIC:
+                    case CWIID_MESG_TYPE.ERROR:
+                    case CWIID_MESG_TYPE.UNKNOWN:
+                        Console.WriteLine("Message Type: " + msg.Type);
+                        break;
+                }
+            }
+        }
+
+        private void DoButtonUpdate(CWIID_BTN buttons)
+        {
+            var state = new WiimoteState();
+            state.ButtonState.A = (buttons & CWIID_BTN.A) != 0;
+            state.ButtonState.B = (buttons & CWIID_BTN.B) != 0;
+            state.ButtonState.One = (buttons & CWIID_BTN.BTN1) != 0;
+            state.ButtonState.Two = (buttons & CWIID_BTN.BTN2) != 0;
+            state.ButtonState.Up = (buttons & CWIID_BTN.UP) != 0;
+            state.ButtonState.Down = (buttons & CWIID_BTN.DOWN) != 0;
+            state.ButtonState.Left = (buttons & CWIID_BTN.LEFT) != 0;
+            state.ButtonState.Right = (buttons & CWIID_BTN.RIGHT) != 0;
+            state.ButtonState.Plus = (buttons & CWIID_BTN.PLUS) != 0;
+            state.ButtonState.Minus = (buttons & CWIID_BTN.MINUS) != 0;
+            state.ButtonState.Home = (buttons & CWIID_BTN.HOME) != 0;
+            var handler = WiimoteChanged;
+            if (handler != null)
+                handler(this, new WiimoteChangedEventArgs(state));
         }
 
         #region IDisposable Members
