@@ -15,6 +15,8 @@ namespace HexyPilot
             wiimotePtr = CWiiD.cwiid_open(ref BluetoothAddress.Any, CWIID_FLAG.MESG_IFC);
 
             CWiiD.cwiid_set_mesg_callback(wiimotePtr, MessageCallback);
+
+            CWiiD.cwiid_set_rpt_mode(wiimotePtr, CWIID_RPT.BTN | CWIID_RPT.STATUS);
         }
 
         public void Disconnect()

@@ -39,7 +39,8 @@ namespace HexyPilot
         MESG_IFC = 0x01,
         CONTINUOUS = 0x02,
         REPEAT_BTN = 0x04,
-        NONBLOCK = 0x08
+        NONBLOCK = 0x08,
+        MOTIONPLUS = 0x10
     }
 
     public enum CWIID_CMD
@@ -48,6 +49,20 @@ namespace HexyPilot
         LED,
         RUMBLE,
         RPT_MODE
+    }
+
+    [Flags]
+    public enum CWIID_RPT
+    {
+        STATUS = 0x01,
+        BTN = 0x02,
+        ACC = 0x04,
+        IR = 0x08,
+        NUNCHUK = 0x10,
+        CLASSIC = 0x20,
+        BALANCE = 0x40,
+        MOTIONPLUS = 0x80,
+        EXT = (NUNCHUK | CLASSIC | BALANCE | MOTIONPLUS)
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -85,5 +100,8 @@ namespace HexyPilot
 
         [DllImport("libcwiid.so.1")]
         public static extern int cwiid_set_mesg_callback(IntPtr wiimote, CWiiDMessageCallback callback);
+
+        [DllImport("libcwiid.so.1")]
+        public static extern int cwiid_set_rpt_mode(IntPtr wiimote, CWIID_RPT rpt_mode);
     }
 }
