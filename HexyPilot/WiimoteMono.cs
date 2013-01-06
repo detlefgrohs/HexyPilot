@@ -4,18 +4,26 @@ namespace HexyPilot
 {
     public class WiimoteMono : IWiimote, IDisposable
     {
+        private IntPtr wiimotePtr;
+
         public event EventHandler<WiimoteChangedEventArgs> WiimoteChanged;
 
         public event EventHandler<WiimoteExtensionChangedEventArgs> WiimoteExtensionChanged;
 
         public void Connect()
         {
-            throw new NotImplementedException();
+            wiimotePtr = CWiiD.cwiid_open(ref BluetoothAddress.Any, CWIID_FLAG.MESG_IFC);
+
+            CWiiD.cwiid_set_mesg_callback(wiimotePtr, MessageCallback);
         }
 
         public void Disconnect()
         {
-            throw new NotImplementedException();
+            if (wiimotePtr != IntPtr.Zero)
+            {
+                CWiiD.cwiid_close(wiimotePtr);
+                wiimotePtr = IntPtr.Zero;
+            }
         }
 
         public void SetReportType(InputReport type, bool continuous)
@@ -30,17 +38,22 @@ namespace HexyPilot
 
         public void SetLEDs(bool led1, bool led2, bool led3, bool led4)
         {
-            throw new NotImplementedException();
+            var flag = 0;
+            if (led1) flag += 0x01;
+            if (led2) flag += 0x02;
+            if (led3) flag += 0x04;
+            if (led4) flag += 0x08;
+            SetLEDs((int)flag);
         }
 
         public void SetLEDs(int leds)
         {
-            throw new NotImplementedException();
+            CWiiD.cwiid_command(wiimotePtr, CWIID_CMD.LED, leds);
         }
 
         public void SetRumble(bool on)
         {
-            throw new NotImplementedException();
+            CWiiD.cwiid_command(wiimotePtr, CWIID_CMD.RUMBLE, on ? 1 : 0);
         }
 
         public void GetStatus()
@@ -66,6 +79,12 @@ namespace HexyPilot
         public WiimoteState WiimoteState
         {
             get { throw new NotImplementedException(); }
+        }
+
+        private void MessageCallback(IntPtr wiimote, int mesg_count, IntPtr mesgArray, ref timespec timestamp)
+        {
+            Console.Write("{0}:{1} ", timestamp.tv_sec, timestamp.tv_nsec);
+            Console.WriteLine(mesg_count);
         }
 
         #region IDisposable Members
