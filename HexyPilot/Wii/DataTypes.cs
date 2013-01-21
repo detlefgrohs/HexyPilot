@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace HexyPilot
+namespace HexyPilot.Wii
 {
     /// <summary>
     /// Point structure for floating point 3D positions (X, Y, Z)

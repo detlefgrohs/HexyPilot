@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace HexyPilot
+namespace HexyPilot.Wii
 {
     /// <summary>
     /// Argument sent through the WiimoteExtensionChangedEvent

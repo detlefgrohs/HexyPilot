@@ -1,6 +1,6 @@
 using System;
 
-namespace HexyPilot
+namespace HexyPilot.Wii
 {
     public interface IWiimote
     {

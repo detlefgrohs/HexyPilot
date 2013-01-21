@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using Microsoft.Win32.SafeHandles;
 
-namespace HexyPilot
+namespace HexyPilot.Wii
 {
     /// <summary>
     /// Implementation of Wiimote

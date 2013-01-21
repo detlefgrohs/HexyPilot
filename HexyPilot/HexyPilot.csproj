@@ -38,13 +38,14 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataTypes.cs" />
-    <Compile Include="Events.cs" />
-    <Compile Include="IWiimote.cs" />
-    <Compile Include="WiimoteMono.cs" />
-    <Compile Include="WiimoteWin32.cs" />
-    <Compile Include="HIDImports.cs" />
-    <Compile Include="CWiiD.cs" />
+    <Compile Include="Hexy.cs" />
+    <Compile Include="Wii\DataTypes.cs" />
+    <Compile Include="Wii\Events.cs" />
+    <Compile Include="Wii\IWiimote.cs" />
+    <Compile Include="Wii\WiimoteMono.cs" />
+    <Compile Include="Wii\WiimoteWin32.cs" />
+    <Compile Include="Wii\HIDImports.cs" />
+    <Compile Include="Wii\CWiiD.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

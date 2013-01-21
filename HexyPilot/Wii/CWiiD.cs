@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace HexyPilot
+namespace HexyPilot.Wii
 {
     [StructLayout(LayoutKind.Sequential)]
     public struct BluetoothAddress

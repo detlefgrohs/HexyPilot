@@ -3,7 +3,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using Microsoft.Win32.SafeHandles;
 
-namespace HexyPilot
+namespace HexyPilot.Wii
 {
     /// <summary>
     /// Win32 import information for use with the Wiimote library
