@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace HexyPilot
 {
