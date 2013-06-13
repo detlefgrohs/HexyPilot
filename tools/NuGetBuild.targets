@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
+
+  <Target Name="Clean">
+    <RemoveDir Directories="$(MSBuildProjectDirectory)\$(OutputPath)" />
+  </Target>
+
+  <Target Name="Build" DependsOnTargets="ResolveReferences;_CopyFilesMarkedCopyLocal">
+
+    <ItemGroup>
+      <ReferenceSourceDirs Include="@(ProjectReference->'%(RootDir)%(Directory)')" />
+    </ItemGroup>
+    <ItemGroup>
+      <ReferenceSourceFiles Include="%(ReferenceSourceDirs.Identity)\**\*.cs" />
+    </ItemGroup>
+
+    <MakeDir Directories="$(OutDir)" />
+    <Copy SourceFiles="@(ReferenceSourceFiles)" DestinationFiles="@(ReferenceSourceFiles->'$(OutDir)src\%(RecursiveDir)\%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(Nuspec)" DestinationFiles="@(Nuspec->'$(OutputPath)%(Filename)%(Extension)')" />
+
+    <PropertyGroup>
+      <AssemblyConfig Condition=" '$(AssemblyConfig)' != '' ">-$(AssemblyConfig)</AssemblyConfig>
+      <BuildNumber Condition=" '$(BuildNumber)' == '0' "></BuildNumber>
+      <FileVersionBuildNumber Condition=" '$(BuildNumber)' != '' And '$(AssemblyConfig)' != '' ">$(BuildNumber)</FileVersionBuildNumber>
+      <FileVersionBuildNumber Condition=" '$(BuildNumber)' != '' And '$(AssemblyConfig)' == '' ">.$(BuildNumber)</FileVersionBuildNumber>
+
+      <NuGetProperties>id=%(Nuspec.Filename);authors=$(Company)</NuGetProperties>
+      <BuildCommand>$(NuGetCommand) pack @(Nuspec) -properties "$(NuGetProperties)" -version "$(CurrentVersion)$(AssemblyConfig)$(FileVersionBuildNumber)" -symbols</BuildCommand>
+    </PropertyGroup>
+
+    <Exec Command="$(BuildCommand)" WorkingDirectory="$(OutputPath)" LogStandardErrorAsError="true" />
+  </Target>
+
+  <Target Name="ReBuild" DependsOnTargets="Clean;Build" />
+
+</Project>
